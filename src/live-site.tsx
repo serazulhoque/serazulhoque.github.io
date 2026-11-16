@@ -74,11 +74,8 @@ export function LiveSiteProvider({ children }: { children: ReactNode }) {
 
   useLayoutEffect(() => {
     if (!data.fresh) return;
-    // Child layout effects update live theme/design before the page is shown.
-    const frame = requestAnimationFrame(() => {
-      document.documentElement.dataset.siteFresh = "ready";
-    });
-    return () => cancelAnimationFrame(frame);
+    // Reveal fresh content in the same layout commit, without an extra frame.
+    document.documentElement.dataset.siteFresh = "ready";
   }, [data]);
 
   useEffect(() => {
@@ -102,11 +99,20 @@ export function LiveSiteProvider({ children }: { children: ReactNode }) {
   // A tab returning from the admin dashboard or browser back/forward cache must
   // recheck the database rather than revealing the old in-memory version.
   useEffect(() => {
+    let lastRefresh = 0;
+    const requestRefresh = () => {
+      // pageshow and visibilitychange often fire together on mobile.
+      // Avoid cancelling and restarting the same network request.
+      const now = Date.now();
+      if (now - lastRefresh < 1500) return;
+      lastRefresh = now;
+      setAttempt(value => value + 1);
+    };
     const onReturn = (event: PageTransitionEvent) => {
-      if (event.persisted) setAttempt(value => value + 1);
+      if (event.persisted) requestRefresh();
     };
     const onVisible = () => {
-      if (document.visibilityState === "visible") setAttempt(value => value + 1);
+      if (document.visibilityState === "visible") requestRefresh();
     };
     const onLeave = () => {
       if (document.documentElement.dataset.siteFresh === "ready")
