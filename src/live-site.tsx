@@ -104,6 +104,20 @@ export function LiveSiteProvider({ children }: { children: ReactNode }) {
     return () => { active = false; controller.abort(); };
   }, [attempt]);
 
+  // General site details are edited in the dashboard, not in HTML templates.
+  // Preserve the more specific titles on blog/about/contact routes.
+  useEffect(() => {
+    if (!data.fresh || window.location.pathname !== "/") return;
+    const name = data.settings.title.trim();
+    const description = data.settings.description.trim();
+    if (name) document.title = name === "Serazul Hoque"
+      ? "Serazul Hoque | Software Engineering Student & AI Enthusiast" : name;
+    if (description) {
+      const meta = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+      if (meta) meta.content = description;
+    }
+  }, [data]);
+
   // A tab returning from the admin dashboard or browser back/forward cache must
   // recheck the database rather than revealing the old in-memory version.
   useEffect(() => {
