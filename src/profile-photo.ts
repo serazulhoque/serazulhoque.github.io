@@ -3,7 +3,8 @@
 const PROFILE_URL = "https://serazul-backend.vercel.app/api/public/profile";
 let currentPhoto: Promise<string | null> | undefined;
 
-export function getProfilePhoto(): Promise<string | null> {
+export function getProfilePhoto(forceRefresh = false): Promise<string | null> {
+  if (forceRefresh) currentPhoto = undefined;
   if (!currentPhoto) {
     currentPhoto = fetch(PROFILE_URL, {
       credentials: "omit",
