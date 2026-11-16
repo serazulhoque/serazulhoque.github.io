@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import "./contact-options.css";
+import {useLiveSite} from "./live-site";
 
-const CONTACT_EMAIL = "hello@serazulh.com";
-const FORM_ENDPOINT = "https://formsubmit.co/ajax/" + CONTACT_EMAIL;
 
 export default function ContactOptions() {
+  const {settings} = useLiveSite();
+  const contactEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(settings.contact_email)
+    ? settings.contact_email : "hello@serazulh.com";
+  const formEndpoint = "https://formsubmit.co/ajax/" + encodeURIComponent(contactEmail);
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -37,7 +40,7 @@ export default function ContactOptions() {
     try {
       // FormSubmit delivers the email after the address owner activates this
       // endpoint by clicking its one-time confirmation message.
-      const response = await fetch(FORM_ENDPOINT, {
+      const response = await fetch(formEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
@@ -81,9 +84,9 @@ export default function ContactOptions() {
     </div>
     {open && <div className="contact-mail-panel" id="contact-mail-panel">
       <h3>Send me a message.</h3>
-      <p>Write to {CONTACT_EMAIL}. I’d be glad to hear from you.</p>
+      <p>Write to {contactEmail}. I’d be glad to hear from you.</p>
       <form className="contact-mail-form" method="POST"
-        action={"https://formsubmit.co/" + CONTACT_EMAIL} onSubmit={submit}>
+        action={"https://formsubmit.co/" + encodeURIComponent(contactEmail)} onSubmit={submit}>
         <div className="contact-mail-fields">
           <label htmlFor="contact-sender-name">Your name
             <input ref={firstField} id="contact-sender-name" name="name" value={name}
