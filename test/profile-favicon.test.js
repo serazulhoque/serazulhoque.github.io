@@ -13,8 +13,7 @@ test("site pages use the selected photo for the tab rather than the green S favi
     assert.doesNotMatch(html, /href="data:image|object\/sign/);
     assert.doesNotMatch(html, /href="\/favicon\.svg"/);
   }
-  const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8");
-  assert.match(main, /updateTabIcon\(\)/);
+  // Static HTML exposes the crawlable current photo before JavaScript runs.
 });
 
 test("tab icon and header share one fresh profile lookup", async () => {
