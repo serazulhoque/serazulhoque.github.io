@@ -6,9 +6,10 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-  # Refresh crawlable photo copies after profile changes made in the admin.
+  # Republish the stable, crawler-visible favicon and social photos hourly.
+  # Google may still take days or weeks to refresh its cached search icon.
   schedule:
-    - cron: "17 */6 * * *"
+    - cron: "17 * * * *"
 
 permissions:
   contents: read
