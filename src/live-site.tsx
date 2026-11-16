@@ -7,6 +7,7 @@ export type LiveSiteData = {
   items: unknown[];
   labels: Record<string, string>;
   design: Record<string, unknown>;
+  settings: {title:string; description:string; contact_email:string};
   fresh: boolean;
 };
 
@@ -15,6 +16,7 @@ const initial: LiveSiteData = {
   items: snapshot.items,
   labels: snapshot.labels,
   design: { layout_config: snapshot.layout },
+  settings: {title:"Serazul Hoque",description:"",contact_email:"hello@serazulh.com"},
   fresh: false
 };
 
@@ -47,6 +49,7 @@ async function getFreshSiteData(signal: AbortSignal): Promise<LiveSiteData> {
   const items = data.items;
   const labels = data.labels;
   const design = data.design;
+  const settings = data.settings;
   if (!page || typeof page !== "object" || Array.isArray(page) ||
       typeof (page as Record<string, unknown>).hero_line_one !== "string" ||
       !Array.isArray(items) ||
@@ -62,6 +65,11 @@ async function getFreshSiteData(signal: AbortSignal): Promise<LiveSiteData> {
     items,
     labels: publicLabels,
     design: design as Record<string, unknown>,
+    settings: settings && typeof settings === "object" && !Array.isArray(settings) ? {
+      title: typeof (settings as Record<string, unknown>).title === "string" ? String((settings as Record<string, unknown>).title) : "Serazul Hoque",
+      description: typeof (settings as Record<string, unknown>).description === "string" ? String((settings as Record<string, unknown>).description) : "",
+      contact_email: typeof (settings as Record<string, unknown>).contact_email === "string" ? String((settings as Record<string, unknown>).contact_email) : "hello@serazulh.com"
+    } : initial.settings,
     fresh: true
   };
 }
