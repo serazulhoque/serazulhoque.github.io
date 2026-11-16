@@ -41,7 +41,7 @@ export default function SiteHeader() {
   const [dark, setDark] = useState(false);
   const [ready, setReady] = useState(false);
   const [themeFade, setThemeFade] = useState(0);
-  const [profilePhoto, setProfilePhoto] = useState("");
+  const [profilePhoto, setProfilePhoto] = useState("/profile-photo.jpg");
 
   useEffect(() => {
     let active = true;

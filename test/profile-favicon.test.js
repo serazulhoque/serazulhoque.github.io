@@ -7,6 +7,10 @@ test("site pages use the selected photo for the tab rather than the green S favi
   for (const page of ["index.html", "about.html", "gallery.html"]) {
     const html = await readFile(new URL("../" + page, import.meta.url), "utf8");
     assert.match(html, /data-profile-favicon/);
+    assert.match(html, /href="\/profile-icon\.png"/);
+    assert.match(html, /property="og:image" content="https:\/\/serazulh\.com\/profile-photo\.jpg"/);
+    assert.match(html, /rel="apple-touch-icon"/);
+    assert.doesNotMatch(html, /href="data:image|object\/sign/);
     assert.doesNotMatch(html, /href="\/favicon\.svg"/);
   }
   const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8");

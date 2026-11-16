@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "vite",
     "typecheck": "tsc --noEmit",
-    "build": "node scripts/snapshot-content.mjs && npm run typecheck && vite build && vite build --ssr src/entry-server.tsx --outDir .prerender && node scripts/prerender.mjs && node scripts/blog-pages.mjs",
+    "build": "node scripts/profile-assets.mjs && node scripts/snapshot-content.mjs && npm run typecheck && vite build && vite build --ssr src/entry-server.tsx --outDir .prerender && node scripts/prerender.mjs && node scripts/blog-pages.mjs",
     "preview": "vite preview",
     "test": "node --experimental-strip-types --test test/*.test.js"
   },
@@ -26,6 +26,7 @@
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "6.0.2",
+    "sharp": "^0.35.5",
     "tailwindcss": "4.2.1",
     "typescript": "5.9.3",
     "vite": "8.3.7"
