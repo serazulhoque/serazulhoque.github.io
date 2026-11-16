@@ -41,14 +41,25 @@ export default function SiteHeader() {
   const [dark, setDark] = useState(false);
   const [ready, setReady] = useState(false);
   const [themeFade, setThemeFade] = useState(0);
-  const [profilePhoto, setProfilePhoto] = useState("/profile-photo.jpg");
+  // Avoid displaying an outdated static photo while the current selection loads.
+  const [profilePhoto, setProfilePhoto] = useState("");
 
   useEffect(() => {
     let active = true;
-    void getProfilePhoto().then(url => {
-      if (active && url) setProfilePhoto(url);
-    });
-    return () => { active = false; };
+    const refresh = (force = false) => {
+      void getProfilePhoto(force).then(url => {
+        if (active) setProfilePhoto(url || "");
+      });
+    };
+    refresh();
+    const onVisible = () => {
+      if (document.visibilityState === "visible") refresh(true);
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      active = false;
+      document.removeEventListener("visibilitychange", onVisible);
+    };
   }, []);
 
   const isAboutPage = typeof window !== "undefined" && ["/aboutme","/aboutme/"].includes(window.location.pathname);
